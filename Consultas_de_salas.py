@@ -16,10 +16,10 @@ elif opcion_menu_reservas.upper() == "C":
                         continue
                     
                     try:
-                        with sqlite3.connect("evidencia3.db") as conn_disponibilidad:
+                        with sqlite3.connect("evidencia3.db", detect_types = sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES) as conn_disponibilidad:
                             mi_cursor = conn_disponibilidad.cursor()
-                            fechaDis_ = fecha_para_ver_disponibles_capturada.strftime("%d/%m/%Y"),
-                            mi_cursor.execute(f"SELECT * FROM reservas WHERE fecha=?", fechaDis_)
+                            valor_fecha = {"fechaDis":fecha_para_ver_disponibles}
+                            mi_cursor.execute(f"SELECT * FROM reservas WHERE DATE(fecha)= :fechaDis;", valor_fecha)
                             registros_reservas_disponibilidad = mi_cursor.fetchall()
                         conn_disponibilidad.close()
                     except Error as e:
@@ -27,7 +27,10 @@ elif opcion_menu_reservas.upper() == "C":
                     except Exception:
                         print(f"\nSe produjo el siguiente error: {sys.exc_info()[0]}")
 
-                    for id_cliente, id_sala, nombre_evento, id_turno in listas_ocupadas:
+                    for registros_reservas_disponibilidad, valor in reservas_dict.items():
+                        folio, fecha, id_cliente, id_sala, id_turno, nombre_evento = (valor[0],valor[1],valor[2],valor[3],valor[4],valor[5])
+                        if fecha == fecha_para_ver_disponibles:
+                            listas_ocupadas.append((sala, turno))
                         try:
                             with sqlite3.connect("evidencia3.db") as conn_salas_disponibilidad:
                                 mi_cursor = conn_salas_disponibilidad.cursor()           
@@ -54,7 +57,7 @@ elif opcion_menu_reservas.upper() == "C":
 
                     for sala in salas_dict:
                         for turno in turno_dict:
-                            lista_posibles.append((registros_reservas_disponibilidad, salas_reservas_disponibilidad, turnos_reservas_disponibilidad))
+                            lista_posibles.append((salas_reservas_disponibilidad, turnos_reservas_disponibilidad))
                     
                     reservas_posibles = set(lista_posibles)
 
