@@ -1,35 +1,67 @@
-# Este me da en teoria las que estan disponibles pero tuve que poner una columna en reservas llamada nombre porque no me dejaba unirla con la de salas, 
-# me salia que era ambiguo el nombre (id_sala) asi que puse la columna solo para probarlo, faltaria la restriccion de que no agarre los que ya tienen reserva pero 
-# no se del todo como podria hacerlo
-import datetime
-import sqlite3
-from sqlite3 import Error
-import sys
+ elif opcion_menu_reservas.upper() == "C":
+                while True:
+                    listas_ocupadas = list()
+                    lista_posibles = list()
 
-fecha_consultar = input("Dime una fecha (dd/mm/aaaa): ")
-fecha_consultar = datetime.datetime.strptime(fecha_consultar, "%d/%m/%Y").date()
+                    fecha_para_ver_disponibles_capturada = input("\nIngrese la fecha donde quiera ver la disponibilidad: ")
 
-try:
-    with sqlite3.connect("evidencia3.db", detect_types = sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES) as conn:
-        mi_cursor = conn.cursor()
-        valores = {"fechar":fecha_consultar}
-        mi_cursor.execute("SELECT id_sala, nombre, nombret, fecha FROM reservas, turnos WHERE DATE(fecha) = :fechar;", valores)
-        registros = mi_cursor.fetchall()
-   
-        if registros:
-            for id_sala, nombre, nombret, fecha in registros:
-                  print(f"ID_Sala = {id_sala}")
-                  print(f"Turno = {nombret}")
-                  print(f"Sala = {nombre}")
-                  print(f"Fecha = {fecha.date().strftime('%d/%m/%Y')}, tipo de dato {type(fecha)}\n")
-        else:
-            print(f"No se encontró salas disponibles asociadas con la fecha {fecha_consultar}")
-        
-except sqlite3.Error as e:
-    print (e)
-except Exception:
-    print(f"Se produjo el siguiente error: {sys.exc_info()[0]}")
-finally:
-    if (conn):
-        conn.close()
-        print("Se ha cerrado la conexión")
+                    if fecha_para_ver_disponibles_capturada.strip() == "":
+                        print("\nLa fecha no puede omitise.")
+                        continue
+
+                    try:
+                        fecha_para_ver_disponibles = datetime.datetime.strptime(fecha_para_ver_disponibles_capturada, "%d/%m/%Y").date()
+                    except Exception:
+                        print("\nFormato de fecha incorrecto.")
+                        continue
+                    
+                    try:
+                        with sqlite3.connect("evidencia3.db") as conn_disponibilidad:
+                            mi_cursor = conn_disponibilidad.cursor()
+                            fechaDis_ = fecha_para_ver_disponibles_capturada.strftime("%d/%m/%Y"),
+                            mi_cursor.execute(f"SELECT FROM WHERE ", fechaDis_)
+                            registros_reservas_disponibilidad = mi_cursor.fetchall()
+                        conn_disponibilidad.close()
+                    except Error as e:
+                        print(e)
+                    except Exception:
+                        print(f"\nSe produjo el siguiente error: {sys.exc_info()[0]}")
+                    for 
+
+                    try:
+                        with sqlite3.connect("evidencia3.db") as conn_salas_disponibilidad:
+                            mi_cursor = conn_salas_disponibilidad.cursor()           
+                            mi_cursor.execute(f"SELECT id_sala, nombre FROM salas WHERE id_sala={id_sala}")
+                            salas_reservas_disponibilidad = mi_cursor.fetchall()
+                        conn_salas_disponibilidad.close()
+                    except Error as e:
+                        print(e)
+                    except Exception:
+                        print(f"\nSe produjo el siguiente error: {sys.exc_info()[0]}")
+
+                    try:
+                        with sqlite3.connect("evidencia3.db") as conn_turnos_disponibilidad:
+                            mi_cursor = conn_turnos_disponibilidad.cursor()
+                            mi_cursor.execute(f"SELECT nombre FROM turnos WHERE id_turno={id_turno}")
+                            registros_reservas_disponibilidad = mi_cursor.fetchall()
+                        conn_turnos_disponibilidad.close()
+                    except Error as e:
+                        print(e)
+                    except Exception:
+                        print(f"\nSe produjo el siguiente error: {sys.exc_info()[0]}")
+
+                    reservas_ocupadas = set(listas_ocupadas)
+
+                    for sala in salas_dict:
+                        for turno in turno_dict:
+                            lista_posibles.append((sala, turno_dict[turno]))
+                    
+                    reservas_posibles = set(lista_posibles)
+
+                    reservaciones_disponibles = sorted(list(reservas_posibles - reservas_ocupadas))
+
+                    print(f"\n** Salas disponibles para renta el {fecha_para_ver_disponibles_capturada} **")
+                    print(f"\n{'SALA':<20}{'TURNO':>20}")
+                    for sala, turno in reservaciones_disponibles:
+                        print(f"{sala},{salas_dict[sala][0]:<20}{turno:>20}")
+                    break
