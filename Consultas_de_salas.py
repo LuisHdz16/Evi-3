@@ -1,21 +1,18 @@
-import datetime
+# Este es para ver las salas
+from datetime import date, datetime
 import sqlite3
 from sqlite3 import Error
 import sys
 
-fecha_consultar = input("Fecha que desea consultar (dd/mm/aaaa): ")
-fecha_consultar = datetime.datetime.strptime(fecha_consultar, "%d/%m/%Y").date()
-
 try:
-    with sqlite3.connect("evidencia3.db", detect_types = sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES) as conn:
+    with sqlite3.connect("evidencia3.db") as conn:
         mi_cursor = conn.cursor()
-        criterios = {"fecha":fecha_consultar}
-        mi_cursor.execute("SELECT id_sala, nombre, cupo, nombret FROM sala, turno, reservas WHERE DATE(fecha_registro) = :fecha AND fechar= NULL;", criterios)
+        mi_cursor.execute("SELECT id_sala, nombre, cupo FROM salas")
         registros = mi_cursor.fetchall()
    
         for id_sala, nombre, cupo in registros:
             print(f"id_sala = {id_sala}")
-            print(f"Nombre = {nombre}")
+            print(f"nombre = {nombre}")
             print(f"cupo = {cupo}\n")
         
 except sqlite3.Error as e:
