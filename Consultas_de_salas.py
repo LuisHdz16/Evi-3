@@ -19,7 +19,7 @@ elif opcion_menu_reservas.upper() == "C":
                         with sqlite3.connect("evidencia3.db") as conn_disponibilidad:
                             mi_cursor = conn_disponibilidad.cursor()
                             fechaDis_ = fecha_para_ver_disponibles_capturada.strftime("%d/%m/%Y"),
-                            mi_cursor.execute(f"SELECT id_sala, nombre, id_turno FROM reservas WHERE fecha=?", fechaDis_)
+                            mi_cursor.execute(f"SELECT * FROM reservas WHERE fecha=?", fechaDis_)
                             registros_reservas_disponibilidad = mi_cursor.fetchall()
                         conn_disponibilidad.close()
                     except Error as e:
@@ -27,11 +27,11 @@ elif opcion_menu_reservas.upper() == "C":
                     except Exception:
                         print(f"\nSe produjo el siguiente error: {sys.exc_info()[0]}")
 
-                    for id_sala, nombre, id_turno in listas_ocupadas:
+                    for id_cliente, id_sala, nombre_evento, id_turno in listas_ocupadas:
                         try:
                             with sqlite3.connect("evidencia3.db") as conn_salas_disponibilidad:
                                 mi_cursor = conn_salas_disponibilidad.cursor()           
-                                mi_cursor.execute(f"SELECT id_sala, nombre FROM salas WHERE id_sala={id_sala}")
+                                mi_cursor.execute(f"SELECT id_sala, nombre FROM salas")
                                 salas_reservas_disponibilidad = mi_cursor.fetchall()
                             conn_salas_disponibilidad.close()
                         except Error as e:
@@ -42,7 +42,7 @@ elif opcion_menu_reservas.upper() == "C":
                         try:
                             with sqlite3.connect("evidencia3.db") as conn_turnos_disponibilidad:
                                 mi_cursor = conn_turnos_disponibilidad.cursor()
-                                mi_cursor.execute(f"SELECT nombre FROM turnos WHERE id_turno={id_turno}")
+                                mi_cursor.execute(f"SELECT nombre FROM turnos")
                                 turnos_reservas_disponibilidad = mi_cursor.fetchall()
                             conn_turnos_disponibilidad.close()
                         except Error as e:
@@ -54,7 +54,7 @@ elif opcion_menu_reservas.upper() == "C":
 
                     for sala in salas_dict:
                         for turno in turno_dict:
-                            lista_posibles.append((salas_reservas_disponibilidad, turnos_reservas_disponibilidad[turno]))
+                            lista_posibles.append((registros_reservas_disponibilidad, salas_reservas_disponibilidad, turnos_reservas_disponibilidad))
                     
                     reservas_posibles = set(lista_posibles)
 
@@ -63,5 +63,5 @@ elif opcion_menu_reservas.upper() == "C":
                     print(f"\n** Salas disponibles para renta el {fecha_para_ver_disponibles_capturada} **")
                     print(f"\n{'SALA':<20}{'TURNO':>20}")
                     for sala, turno in reservaciones_disponibles:
-                        print(f"{sala},{salas_dict[sala][0]:<20}{turno:>20}")
+                        print(f"{sala},{salas_reservas_disponibilidad[0]:<20}{turnos_reservas_disponibilidad:>20}")
                     break
