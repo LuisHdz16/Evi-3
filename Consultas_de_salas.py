@@ -1,18 +1,22 @@
-# Este es para ver las salas
+# Este es para ver por cupo
 from datetime import date, datetime
 import sqlite3
 from sqlite3 import Error
 import sys
 
+valor_clave = int(input("Cupo a consultar: "))
+
 try:
     with sqlite3.connect("evidencia3.db") as conn:
         mi_cursor = conn.cursor()
-        mi_cursor.execute("SELECT id_sala, nombre, cupo FROM salas")
+        valores = {"cupo":valor_clave}
+        mi_cursor.execute("SELECT id_sala, nombre, nombret, cupo FROM salas, turnos WHERE cupo = :cupo", valores)
         registros = mi_cursor.fetchall()
    
-        for id_sala, nombre, cupo in registros:
+        for id_sala, nombre, nombret, cupo in registros:
             print(f"id_sala = {id_sala}")
             print(f"nombre = {nombre}")
+            print(f"nombret = {nombret}")
             print(f"cupo = {cupo}\n")
         
 except sqlite3.Error as e:
