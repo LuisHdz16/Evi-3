@@ -103,5 +103,4 @@ while True:
                 break
             else:
                 print("\nElija una opcion correcta.")
-    elif opcion_menu.upper() == "B":
-        while True:
+
