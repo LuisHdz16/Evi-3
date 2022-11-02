@@ -91,7 +91,75 @@ while True:
             opcion_menu_reportes = input("\nElija una opción: ")
 
             if opcion_menu_reportes.upper() == "A":
-                pass
+                while True:
+
+                    consulta_reservaciones.clear()
+
+                    fecha_a_consultar_capturada = input("\nFecha que desea consultar si hay reservaciones: ")
+
+                    if fecha_a_consultar_capturada.strip() == "":
+                        print("\nNo se puede omitir la fecha.")
+                        continue
+                    
+                    fecha_a_consultar = puede_ser_tipo_fecha(fecha_a_consultar_capturada)
+
+                    if fecha_a_consultar == False:
+                        print("\nNo es de tipo de fecha correcto.")
+                        continue
+
+                    try:
+                        with sqlite3.connect("evidencia3.db") as conn_reservas_reporte:
+                            mi_cursor = conn_reservas_reporte.cursor()
+                            fecha_ = fecha_a_consultar.strftime("%d/%m/%Y"),
+                            mi_cursor.execute(f"SELECT id_sala, id_cliente, nombre_evento ,id_turno FROM reservas WHERE fecha=?", fecha_)
+                            registros_reservas_reporte = mi_cursor.fetchall()
+                        conn_reservas_reporte.close()
+                    except Error as e:
+                        print(e)
+                    except Exception:
+                        print(f"\nSe produjo el siguiente error: {sys.exc_info()[0]}")
+
+                        
+
+                    for id_sala, id_cliente, nombre_evento, id_turno in registros_reservas_reporte:
+                        try:
+                            with sqlite3.connect("evidencia3.db") as conn_clientes_reporte:
+                                mi_cursor = conn_clientes_reporte.cursor()
+                                mi_cursor.execute(f"SELECT  nombre FROM clientes WHERE id_cliente={id_cliente}")
+                                cliente_nombre_reporte = mi_cursor.fetchall()
+                            conn_clientes_reporte.close()
+                        except Error as e:
+                            print(e)
+                        except Exception:
+                            print(f"\nSe produjo el siguiente error: {sys.exc_info()[0]}")
+
+                        try:
+                            with sqlite3.connect("evidencia3.db")as conn_turnos_reporte:
+                                mi_cursor = conn_turnos_reporte.cursor()
+                                mi_cursor.execute(f"SELECT nombre FROM turnos WHERE id_turno={id_turno}")
+                                turno_nombre_reporte = mi_cursor.fetchall()
+                            conn_turnos_reporte.close()
+                        except Error as e:
+                            print(e)
+                        except Exception:
+                            print(f"\nSe produjo el siguiente error: {sys.exc_info()[0]}")
+
+                        consulta_reservaciones.append((id_sala, cliente_nombre_reporte[0][0], nombre_evento, turno_nombre_reporte[0][0]))
+                        continue
+                            
+                    if len(consulta_reservaciones) == 0:
+                        print("\nNo hay reservaciones en esa fecha.")
+                        break
+
+                    print("*" * 100)
+                    print(f"{'REPORTE DE RESERVACIONES PARA EL DIA ' + fecha_a_consultar_capturada:^100}")
+                    print("*" * 100)
+                    print(f"{'SALA':<15}{'CLIENTE':<20}{'EVENTO':<50}TURNO")
+                    print("*" * 100)
+                    for datos in consulta_reservaciones:
+                        print(f"{datos[0]:<15}{datos[1]:<20}{datos[2]:<50}{datos[3]}")
+                    print("*" * 100)
+                    break
             elif opcion_menu_reportes.upper() == "B":
                 pass
             elif opcion_menu_reportes.upper() == "C":
@@ -106,4 +174,3 @@ while True:
         break
     else:
         print("\nElija una opcion correcta.")
-
