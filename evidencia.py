@@ -5,6 +5,18 @@ from sqlite3 import Error
 import openpyxl
 import os
 
+def puede_ser_tipo_fecha(fecha):
+    try:
+        return datetime.datetime.strptime(fecha, "%d/%m/%Y").date()
+    except Exception:
+        return False
+
+def puede_ser_int(valor):
+    try:
+        return int(valor)
+    except Exception:
+        return False
+
 if os.path.isfile("evidencia3.db"):
     print("\nSe detecto que hay datos previos.")
 else:
@@ -22,6 +34,8 @@ else:
         conn_creacion_tablas.close()
     except Error as e:
         print(e)
+
+consulta_reservaciones = []
 
 while True:
 
