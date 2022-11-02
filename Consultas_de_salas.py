@@ -1,4 +1,4 @@
- elif opcion_menu_reservas.upper() == "C":
+elif opcion_menu_reservas.upper() == "C":
                 while True:
                     listas_ocupadas = list()
                     lista_posibles = list()
@@ -19,42 +19,42 @@
                         with sqlite3.connect("evidencia3.db") as conn_disponibilidad:
                             mi_cursor = conn_disponibilidad.cursor()
                             fechaDis_ = fecha_para_ver_disponibles_capturada.strftime("%d/%m/%Y"),
-                            mi_cursor.execute(f"SELECT FROM WHERE ", fechaDis_)
+                            mi_cursor.execute(f"SELECT id_sala, nombre, id_turno FROM reservas WHERE fecha=?", fechaDis_)
                             registros_reservas_disponibilidad = mi_cursor.fetchall()
                         conn_disponibilidad.close()
                     except Error as e:
                         print(e)
                     except Exception:
                         print(f"\nSe produjo el siguiente error: {sys.exc_info()[0]}")
-                    for 
 
-                    try:
-                        with sqlite3.connect("evidencia3.db") as conn_salas_disponibilidad:
-                            mi_cursor = conn_salas_disponibilidad.cursor()           
-                            mi_cursor.execute(f"SELECT id_sala, nombre FROM salas WHERE id_sala={id_sala}")
-                            salas_reservas_disponibilidad = mi_cursor.fetchall()
-                        conn_salas_disponibilidad.close()
-                    except Error as e:
-                        print(e)
-                    except Exception:
-                        print(f"\nSe produjo el siguiente error: {sys.exc_info()[0]}")
+                    for id_sala, nombre, id_turno in listas_ocupadas:
+                        try:
+                            with sqlite3.connect("evidencia3.db") as conn_salas_disponibilidad:
+                                mi_cursor = conn_salas_disponibilidad.cursor()           
+                                mi_cursor.execute(f"SELECT id_sala, nombre FROM salas WHERE id_sala={id_sala}")
+                                salas_reservas_disponibilidad = mi_cursor.fetchall()
+                            conn_salas_disponibilidad.close()
+                        except Error as e:
+                            print(e)
+                        except Exception:
+                            print(f"\nSe produjo el siguiente error: {sys.exc_info()[0]}")
 
-                    try:
-                        with sqlite3.connect("evidencia3.db") as conn_turnos_disponibilidad:
-                            mi_cursor = conn_turnos_disponibilidad.cursor()
-                            mi_cursor.execute(f"SELECT nombre FROM turnos WHERE id_turno={id_turno}")
-                            registros_reservas_disponibilidad = mi_cursor.fetchall()
-                        conn_turnos_disponibilidad.close()
-                    except Error as e:
-                        print(e)
-                    except Exception:
-                        print(f"\nSe produjo el siguiente error: {sys.exc_info()[0]}")
+                        try:
+                            with sqlite3.connect("evidencia3.db") as conn_turnos_disponibilidad:
+                                mi_cursor = conn_turnos_disponibilidad.cursor()
+                                mi_cursor.execute(f"SELECT nombre FROM turnos WHERE id_turno={id_turno}")
+                                turnos_reservas_disponibilidad = mi_cursor.fetchall()
+                            conn_turnos_disponibilidad.close()
+                        except Error as e:
+                            print(e)
+                        except Exception:
+                            print(f"\nSe produjo el siguiente error: {sys.exc_info()[0]}")
 
                     reservas_ocupadas = set(listas_ocupadas)
 
                     for sala in salas_dict:
                         for turno in turno_dict:
-                            lista_posibles.append((sala, turno_dict[turno]))
+                            lista_posibles.append((salas_reservas_disponibilidad, turnos_reservas_disponibilidad[turno]))
                     
                     reservas_posibles = set(lista_posibles)
 
