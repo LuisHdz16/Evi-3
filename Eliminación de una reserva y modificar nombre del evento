@@ -93,7 +93,14 @@ while True:
                 if not folio_evento.strip() == "" and not nombre_evento.strip() == "":
                     editarReservacion(folio_evento, nombre_evento)
                 else: 
-                    print("\El Folio o Nombre de Evento no puede omitirse")
+                    print("\El Folio o Nombre de Evento no puede omitirse.")
+                    
+                try:
+                    folio_evento = int(folio_evento)
+                except Exception:
+                    print("\nEl folio no es de tipo entero.")
+                    continue
+                    
             elif opcion_menu_reservas.upper() == "C":
                 pass
             elif opcion_menu_reservas.upper() == "D":
