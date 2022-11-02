@@ -1,16 +1,13 @@
-# Este es para ver por cupo
+# Este es para ver las salas con la combinacion de cada turno
 from datetime import date, datetime
 import sqlite3
 from sqlite3 import Error
 import sys
 
-valor_clave = int(input("Cupo a consultar: "))
-
 try:
     with sqlite3.connect("evidencia3.db") as conn:
         mi_cursor = conn.cursor()
-        valores = {"cupo":valor_clave}
-        mi_cursor.execute("SELECT id_sala, nombre, nombret, cupo FROM salas, turnos WHERE cupo = :cupo", valores)
+        mi_cursor.execute("SELECT id_sala, nombre, nombret, cupo FROM salas, turnos")
         registros = mi_cursor.fetchall()
    
         for id_sala, nombre, nombret, cupo in registros:
