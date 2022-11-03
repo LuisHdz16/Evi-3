@@ -1,0 +1,120 @@
+import datetime
+import sys
+import sqlite3
+from sqlite3 import Error
+#import openpyxl
+import os
+
+
+
+
+"""
+
+Funcion para agregar un cliente a la db
+
+"""
+def agregarCliente(nombre):
+    db = sqlite3.connect("evidencia3.db")
+    db.cursor().execute('''INSERT INTO Clientes(nombre) VALUES(?)''', (nombre,))
+    db.commit()
+    db.close()
+    print('{Cliente Agregado}')
+
+"""
+Funcion para agregar una sala
+
+"""
+def agregarSala(nombre, cupo):
+    if cupo > 0:
+        db = sqlite3.connect("evidencia3.db")
+        db.cursor().execute('''INSERT INTO Salas(nombre,cupo)
+                            VALUES(?,?)''', (nombre, cupo))
+        db.commit()
+        db.close()
+
+        print('{Sala Agregada}')
+    else:
+        print('\nEl numero de ocupacion Debe Ser Mayor a 0')
+        
+        print("""
+    --------------------------------MENÚ REPORTES--------------------------------\n
+    [A] REPORTE EN PANTALLA DE RESERVACIONES PARA UNA FECHA\n
+    [B]	EXPORTAR REPORTE TABULAR EN EXCEL\n
+    [C]	VOLVER AL MENÚ PRINCIPAL\n
+    """)
+
+            opcion_menu_reportes = input("\nElija una opción: ")
+
+            if opcion_menu_reportes.upper() == "A":
+                pass
+            elif opcion_menu_reportes.upper() == "B":
+                pass
+            elif opcion_menu_reportes.upper() == "C":
+                break
+            else:
+                print("\nElija una opcion correcta.")
+    elif opcion_menu.upper() == "C":
+        nombre_cliente = input("\nIngrese Nombre Cliente: ")
+        if not nombre_cliente.strip() == "":
+            agregarCliente(nombre_cliente)
+        else: 
+            print("\El Nombre de Cliente no puede omitirse")
+        
+    elif opcion_menu.upper() == "D":
+       while True:
+
+            sala_nombre = input("\nNombre de sala: ")
+
+            if sala_nombre.strip() == "":
+                print("\nNo puede omitirse el nombre de la sala.")
+                continue
+
+            break
+
+        while True:
+
+            cupo_de_sala_capturada = input("\nCupo de la sala: ")
+
+            if cupo_de_sala_capturada.strip() == "":
+                print("\nNo puede omitirse el cupo de la sala.")
+                continue
+
+            try:
+                cupo_de_sala = int(cupo_de_sala_capturada)
+            except Exception:
+                print("\nNo es de tipo entero.")
+            
+            if cupo_de_sala <= 0:
+                print("\nEl cupo de la sala debe ser mayor a cero.")
+                continue
+                
+    elif opcion_menu.upper() == "E":
+        break
+    else:
+        print("\nElija una opcion correcta.")
+        while True:
+
+            sala_nombre = input("\nNombre de sala: ")
+
+            if sala_nombre.strip() == "":
+                print("\nNo puede omitirse el nombre de la sala.")
+                continue
+
+            break
+
+        while True:
+
+            cupo_de_sala_capturada = input("\nCupo de la sala: ")
+
+            if cupo_de_sala_capturada.strip() == "":
+                print("\nNo puede omitirse el cupo de la sala.")
+                continue
+
+            try:
+                cupo_de_sala = int(cupo_de_sala_capturada)
+            except Exception:
+                print("\nNo es de tipo entero.")
+            
+            if cupo_de_sala <= 0:
+                print("\nEl cupo de la sala debe ser mayor a cero.")
+                continue
