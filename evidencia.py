@@ -422,7 +422,61 @@ while True:
                                         print(f"{sala}, {sala_:<30}{turno_}")
                     break
             elif opcion_menu_reservas.upper() == "D":
-                pass
+                while True:
+
+                    try:
+                        with sqlite3.connect("evidencia3.db") as conn_reservas_consultas:
+                            mi_cursor = conn_reservas_consultas.cursor()
+                            mi_cursor.execute(f"SELECT folio, fecha, id_sala, id_cliente, nombre_evento ,id_turno FROM reservas")
+                            registros_reservas_para_mostrar = mi_cursor.fetchall()
+                        conn_reservas_consultas.close()     
+                    except Error as e:
+                        print(e)
+                    except Exception:
+                        print(f"Se produjo el siguiente error: {sys.exc_info()[0]}")
+                    
+                    print()
+                    print(f"{'REGISTROS DE RESERVACIONES':^140}")
+                    print("*" * 140)
+                    print(f"{'FOLIO':<10}{'FECHA':<15}{'SALA':<10}{'CLAVE CLIENTE':<25}{'EVENTO':<70}{'TURNO':<10}")
+                    print("*" * 140)
+                    for folio, fecha, id_sala, id_cliente, nombre_evento ,id_turno in registros_reservas_para_mostrar:
+                        print(f"{folio:<10}{fecha:<15}{id_sala:<10}{id_cliente:<25}{nombre_evento:<70}{id_turno:<10}")
+                    print("*" * 140)
+
+                    folio_para_eliminar_capturada = input("\nEscribe el folio de la reservacion que quiera eliminar: ")
+
+                    folio_para_eliminar = puede_ser_int(folio_para_eliminar_capturada)
+
+                    if folio_para_eliminar == False:
+                        print("\nEl dato no es de tipo entero.")
+                        continue
+
+                    try:
+                        with sqlite3.connect("evidencia3.db") as conn_reservas_consultas:
+                            mi_cursor = conn_reservas_consultas.cursor()
+                            mi_cursor.execute(f"SELECT folio, fecha, id_sala, id_cliente, nombre_evento ,id_turno FROM reservas WHERE folio={folio_para_eliminar}")
+                            registros_reservas = mi_cursor.fetchall()
+                        conn_reservas_consultas.close()     
+                    except Error as e:
+                        print(e)
+                    except Exception:
+                        print(f"Se produjo el siguiente error: {sys.exc_info()[0]}")
+
+                    for folio, fecha, id_sala, id_cliente, nombre_evento ,id_turno in registros_reservas:
+                        print(f"\n{'Datos del folio':^60}")
+                        print("*" * 60)
+                        print(f"Fecha: {fecha}")
+                        print(f"No. de sala: {id_sala}")
+                        print(f"Clave del cliente: {id_cliente}")
+                        print(f"Evento: {nombre_evento}")
+                        print(f"No. de turno: {id_turno}")
+                        print("*" * 60)
+                        break           
+                    else:
+                        print("\nEl folio que proporciono no existe.")
+                        continue
+                    break
             elif opcion_menu_reservas.upper() == "E":
                 break
             else:
