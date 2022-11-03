@@ -61,7 +61,7 @@ def agregarSala(nombre, cupo):
             print("\El Nombre de Cliente no puede omitirse")
         
     elif opcion_menu.upper() == "D":
-        while True:
+       while True:
 
             sala_nombre = input("\nNombre de sala: ")
 
