@@ -33,33 +33,6 @@ def agregarSala(nombre, cupo):
         db.close()
 
         print('{Sala Agregada}')
-        
-         while True:
-
-            sala_nombre = input("\nNombre de sala: ")
-
-            if sala_nombre.strip() == "":
-                print("\nNo puede omitirse el nombre de la sala.")
-                continue
-
-            break
-
-        while True:
-
-            cupo_de_sala_capturada = input("\nCupo de la sala: ")
-
-            if cupo_de_sala_capturada.strip() == "":
-                print("\nNo puede omitirse el cupo de la sala.")
-                continue
-
-            try:
-                cupo_de_sala = int(cupo_de_sala_capturada)
-            except Exception:
-                print("\nNo es de tipo entero.")
-            
-            if cupo_de_sala <= 0:
-                print("\nEl cupo de la sala debe ser mayor a cero.")
-                continue
     else:
         print('\nEl numero de ocupacion Debe Ser Mayor a 0')
         
@@ -88,14 +61,60 @@ def agregarSala(nombre, cupo):
             print("\El Nombre de Cliente no puede omitirse")
         
     elif opcion_menu.upper() == "D":
-        nombre_sala = input("\nIngrese Nombre Sala: ")
-        cupo_sala = input("\nIngrese Ocupacion Sala: ")
-        if not nombre_sala.strip() == "" and not cupo_sala.strip() == "":
-            agregarSala(nombre_sala, cupo_sala)
-        else: 
-            print("\El Nombre de Sala o Cupo no puede omitirse")
-        
+        while True:
+
+            sala_nombre = input("\nNombre de sala: ")
+
+            if sala_nombre.strip() == "":
+                print("\nNo puede omitirse el nombre de la sala.")
+                continue
+
+            break
+
+        while True:
+
+            cupo_de_sala_capturada = input("\nCupo de la sala: ")
+
+            if cupo_de_sala_capturada.strip() == "":
+                print("\nNo puede omitirse el cupo de la sala.")
+                continue
+
+            try:
+                cupo_de_sala = int(cupo_de_sala_capturada)
+            except Exception:
+                print("\nNo es de tipo entero.")
+            
+            if cupo_de_sala <= 0:
+                print("\nEl cupo de la sala debe ser mayor a cero.")
+                continue
+                
     elif opcion_menu.upper() == "E":
         break
     else:
         print("\nElija una opcion correcta.")
+        while True:
+
+            sala_nombre = input("\nNombre de sala: ")
+
+            if sala_nombre.strip() == "":
+                print("\nNo puede omitirse el nombre de la sala.")
+                continue
+
+            break
+
+        while True:
+
+            cupo_de_sala_capturada = input("\nCupo de la sala: ")
+
+            if cupo_de_sala_capturada.strip() == "":
+                print("\nNo puede omitirse el cupo de la sala.")
+                continue
+
+            try:
+                cupo_de_sala = int(cupo_de_sala_capturada)
+            except Exception:
+                print("\nNo es de tipo entero.")
+            
+            if cupo_de_sala <= 0:
+                print("\nEl cupo de la sala debe ser mayor a cero.")
+                continue
