@@ -565,7 +565,14 @@ while True:
                     print("*" * 100)
                     break
             elif opcion_menu_reportes.upper() == "B":
-                pass
+                libro = openpyxl.Workbook()
+                hoja = libro["Sheet"] 
+                hoja.title = "Primera"
+                hoja.append(("sala", "cliente", "evento", "turno"))
+                for valores in consulta_reservaciones:
+                    hoja.append(valores)
+                libro.save("reservas_tabular.xlsx")
+                print("\nExportado a Excel correctamente.")
             elif opcion_menu_reportes.upper() == "C":
                 break
             else:
