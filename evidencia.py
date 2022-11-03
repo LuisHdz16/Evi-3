@@ -286,7 +286,67 @@ while True:
                             print(f"Se produjo el siguiente error: {sys.exc_info()[0]}")
                     break
             elif opcion_menu_reservas.upper() == "B":
-                pass
+                while True:
+
+                    try:
+                        with sqlite3.connect("evidencia3.db") as conn_select_modificar_nombre:
+                            mi_cursor = conn_select_modificar_nombre.cursor()
+                            mi_cursor.execute("SELECT folio, nombre_evento FROM reservas")
+                            registros_modificar_nombre = mi_cursor.fetchall()
+                        conn_select_modificar_nombre.close()      
+                    except Error as e:
+                        print(e)
+                    except Exception:
+                        print(f"Se produjo el siguiente error: {sys.exc_info()[0]}")
+
+                    print(f"\n{'Modificar nombre':^50}")
+                    print("-" * 50)
+                    print(f"{'Folio':<10}{'Nombre evento'}")
+                    print("-" * 50)
+                    for folio, nombre_evento in registros_modificar_nombre:
+                        print(f"{folio:<10}{nombre_evento}")
+                    print("-" * 50)
+
+                    folio_editar_nombre_capturado = input("\nIngresa el folio de la reservación que quiere editar el nombre: ")
+
+                    if folio_editar_nombre_capturado.strip() == "":
+                        print("\nEl folio no puede omitirse.")
+                        continue
+
+                    folio_editar_nombre = puede_ser_int(folio_editar_nombre_capturado)
+
+                    if folio_editar_nombre == False:
+                        print("\nDato proporcionado no es de tipo entero.")
+                        continue
+
+                    try:
+                        with sqlite3.connect("evidencia3.db") as conn_select_por_folio:
+                            mi_cursor = conn_select_por_folio.cursor()
+                            mi_cursor.execute(f"SELECT folio FROM reservas WHERE folio={folio_editar_nombre}")
+                            registro_folio = mi_cursor.fetchall()
+                        conn_select_por_folio.close()      
+                    except Error as e:
+                        print(e)
+                    except Exception:
+                        print(f"Se produjo el siguiente error: {sys.exc_info()[0]}")
+
+                    if len(registro_folio) == 0:
+                        print("\nEl folio proporcionado no existe.")
+                        continue
+                    
+                    nombre_del_evento_editado = input("\nEscriba el nuevo nombre del evento: ")
+
+                    try:
+                        with sqlite3.connect("evidencia3.db") as conn_update_modificar_nombre:
+                            mi_cursor = conn_update_modificar_nombre.cursor()
+                            mi_cursor.execute(f"UPDATE reservas SET nombre_evento={nombre_del_evento_editado}")
+                        conn_update_modificar_nombre.close()      
+                    except Error as e:
+                        print(e)
+                    except Exception:
+                        print(f"\nSe produjo el siguiente error: {sys.exc_info()[0]}")
+                            
+                    break
             elif opcion_menu_reservas.upper() == "C":
                 pass
             elif opcion_menu_reservas.upper() == "D":
