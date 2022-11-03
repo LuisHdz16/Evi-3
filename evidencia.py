@@ -343,8 +343,8 @@ while True:
                                     actualizacion_nombre = (nombre_actualizado,folio_editar_nombre)
                                     mi_cursor.execute("UPDATE reservas SET nombre_evento=? WHERE folio=?", actualizacion_nombre)
                                     print("\nNombre del evento editado.")
-                                    break
-                                conn_modificado_nombre.close()    
+                                conn_modificado_nombre.close()
+                                break    
                             except Error as e:
                                 print (e)
                             except Exception:
@@ -480,9 +480,29 @@ while True:
                         print(f"Evento: {nombre_evento}")
                         print(f"No. de turno: {id_turno}")
                         print("*" * 60)
-                        break           
+                        break             
                     else:
                         print("\nEl folio que proporciono no existe.")
+                        continue
+                    break
+                while True:
+                    confirmacion_elimacion = input("\nConfiramcion de la eliminacion de la reserva de la sala(S/N): ")
+                    if confirmacion_elimacion.upper() == "S":
+                        try:
+                            with sqlite3.connect("evidencia3.db") as conn_delete_reserva:
+                                cursor = conn_delete_reserva.cursor()
+                                cursor.execute(f"DELETE FROM reservas WHERE folio={folio_para_eliminar}")
+                                print("\nReserva eliminada correctamente.")
+                            conn_delete_reserva.close()
+                        except Error as e:
+                            print(e)
+                        except Exception:
+                            print(f"Se produjo el siguiente error: {sys.exc_info()[0]}")
+                    elif confirmacion_elimacion.upper() == "N":
+                        print("\nReserva no eliminada.")
+                        break
+                    else:
+                        print("\nProporcione una opcion correcta.")
                         continue
                     break
             elif opcion_menu_reservas.upper() == "E":
