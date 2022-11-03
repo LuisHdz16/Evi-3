@@ -348,7 +348,79 @@ while True:
                             
                     break
             elif opcion_menu_reservas.upper() == "C":
-                pass
+                while True:
+
+                    listas_ocupadas = list()
+                    lista_posibles = list()
+
+                    fecha_para_ver_disponibles_capturada = input("\nIngrese la fecha donde quiera ver la disponibilidad: ")
+
+                    if fecha_para_ver_disponibles_capturada.strip() == "":
+                        print("\nLa fecha no puede omitise.")
+                        continue
+
+                    try:
+                        fecha_para_ver_disponibles = datetime.datetime.strptime(fecha_para_ver_disponibles_capturada, "%d/%m/%Y").date()
+                    except Exception:
+                        print("\nFormato de fecha incorrecto.")
+                        continue
+
+                    try:
+                        with sqlite3.connect("evidencia3.db") as conn_reservas_consultas:
+                            mi_cursor = conn_reservas_consultas.cursor()
+                            fecha_formato = fecha_para_ver_disponibles.strftime("%d/%m/%Y"),
+                            mi_cursor.execute(f"SELECT id_sala, id_turno FROM reservas WHERE fecha=?", fecha_formato)
+                            registros_reservas_consultas = mi_cursor.fetchall()
+                        conn_reservas_consultas.close()     
+                    except Error as e:
+                        print (e)
+                    except Exception:
+                        print(f"Se produjo el siguiente error: {sys.exc_info()[0]}")
+
+                    for sala_, turno_ in registros_reservas_consultas:
+                        listas_ocupadas.append((sala_, turno_))
+                    
+                    reservas_ocupadas = set(listas_ocupadas)
+
+                    try:
+                        with sqlite3.connect("evidencia3.db")as conn_turnos:
+                            mi_cursor = conn_turnos.cursor()
+                            mi_cursor.execute("SELECT id_turno, nombre FROM turnos")
+                            registros_turnos = mi_cursor.fetchall()
+                        conn_turnos.close()      
+                    except Error as e:
+                        print (e)
+                    except Exception:
+                        print(f"Se produjo el siguiente error: {sys.exc_info()[0]}")
+
+                    try:
+                        with sqlite3.connect("evidencia3.db")as conn_salas:
+                            mi_cursor = conn_salas.cursor()
+                            mi_cursor.execute("SELECT id_sala, nombre FROM salas")
+                            registros_salas = mi_cursor.fetchall()
+                        conn_salas.close()      
+                    except Error as e:
+                        print (e)
+                    except Exception:
+                        print(f"Se produjo el siguiente error: {sys.exc_info()[0]}")
+
+                    for id, sala in registros_salas:
+                        for id_, turno in registros_turnos:
+                            lista_posibles.append((id, id_))
+
+                    reservas_posibles = set(lista_posibles)
+
+                    reservaciones_disponibles = sorted(list(reservas_posibles - reservas_ocupadas))
+
+                    print(f"\n** Salas disponibles para renta el {fecha_para_ver_disponibles_capturada} **")
+                    print(f"\n{'SALA':<33}{'TURNO'}")
+                    for sala, turno in reservaciones_disponibles:
+                        for id, sala_ in registros_salas:
+                            if sala == id:
+                                for id_, turno_ in registros_turnos:
+                                    if id_ == turno:
+                                        print(f"{sala}, {sala_:<30}{turno_}")
+                    break
             elif opcion_menu_reservas.upper() == "D":
                 pass
             elif opcion_menu_reservas.upper() == "E":
