@@ -334,18 +334,26 @@ while True:
                         print("\nEl folio proporcionado no existe.")
                         continue
                     
-                    nombre_del_evento_editado = input("\nEscriba el nuevo nombre del evento: ")
-
-                    try:
-                        with sqlite3.connect("evidencia3.db") as conn_update_modificar_nombre:
-                            mi_cursor = conn_update_modificar_nombre.cursor()
-                            mi_cursor.execute(f"UPDATE reservas SET nombre_evento={nombre_del_evento_editado}")
-                        conn_update_modificar_nombre.close()      
-                    except Error as e:
-                        print(e)
-                    except Exception:
-                        print(f"\nSe produjo el siguiente error: {sys.exc_info()[0]}")
+                    for valores in registros_modificar_nombre:
+                        if valores[0] == folio_editar_nombre:
+                            nombre_actualizado = input("\nIngrese el nuevo nombre del evento: ")
+                            try:
+                                with sqlite3.connect("evidencia3.db") as conn_modificado_nombre:
+                                    mi_cursor = conn_modificado_nombre.cursor()
+                                    actualizacion_nombre = (nombre_actualizado,folio_editar_nombre)
+                                    mi_cursor.execute("UPDATE reservas SET nombre_evento=? WHERE folio=?", actualizacion_nombre)
+                                    print("\nNombre del evento editado.")
+                                    break
+                                conn_modificado_nombre.close()    
+                            except Error as e:
+                                print (e)
+                            except Exception:
+                                print(f"Se produjo el siguiente error: {sys.exc_info()[0]}")
                             
+                            break
+                    else:
+                        print("\nNo existe el folio.")
+                        continue
                     break
             elif opcion_menu_reservas.upper() == "C":
                 while True:
