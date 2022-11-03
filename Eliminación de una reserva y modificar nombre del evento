@@ -118,6 +118,26 @@ while True:
                 except Exception:
                     print("\nEl folio no es de tipo entero.")
                     continue
+                    
+                try:
+                    with sqlite3.connect("evidencia3.db") as conn:
+                        db.cursor = conn.cursor()
+                        valores = {"folio":valor_folio}
+                        db.cursor.execute("SELECT * FROM Reservas WHERE folio = :folio, nombre = :nombre", valores)
+                        reservas = db.cursor.fetchall()
+
+                        if registro:
+                            for folio, nombre in Reservas:
+                                print(f"{folio}\t{nombre}")
+                        else:
+                            print(f"No se encontró una reservación asociada con el folio {valor_folio}")
+                except Error as e:
+                    print (e)
+                except:
+                    print(f"Se produjo el siguiente error: {sys.exc_info()[0]}")
+                    continue
+                
+                print("\n")
                 
                 eliminarReservacion(folio_evento) 
                 
