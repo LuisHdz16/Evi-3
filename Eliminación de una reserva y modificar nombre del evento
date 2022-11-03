@@ -104,17 +104,20 @@ while True:
             elif opcion_menu_reservas.upper() == "C":
                 pass
             elif opcion_menu_reservas.upper() == "D":
+            
+                while True:
+            
                 folio_evento = input("\nIngrese Folio Reservacion: ")
                 
                 if folio_evento.strip() == "":
                     print("\nEl folio no puede omitirse.")
-                continue
+                    continue
 
                 try:
                     folio_evento = int(folio_evento)
                 except Exception:
                     print("\nEl folio no es de tipo entero.")
-                continue
+                    continue
                 
                 eliminarReservacion(folio_evento) 
                 
