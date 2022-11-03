@@ -72,7 +72,219 @@ while True:
             opcion_menu_reservas = input("Elija una opción: ")
 
             if opcion_menu_reservas.upper() == "A":
-                pass
+                while True:
+
+                    try:
+                        with sqlite3.connect("evidencia3.db") as conn_mostrar_clientes:
+                            cursor = conn_mostrar_clientes.cursor()
+                            cursor.execute("SELECT id_cliente, nombre FROM clientes")
+                            registros_clientes_mostrar = cursor.fetchall()
+                            print(f"\n{'Clientes registrados':^40}")
+                            print("-" * 40)
+                            print("Clave\t\tCliente")
+                            print("-" * 40)
+                            for clave, nombre in registros_clientes_mostrar:
+                                print(f"{clave}\t\t{nombre}")
+                            print("-" * 40)
+                        conn_mostrar_clientes.close()
+                    except Error as e:
+                        print(e)
+                    except Exception:
+                        print(f"\nSe produjo el siguiente error: {sys.exc_info()[0]}")
+
+                    reserva_clave_del_cliente_capturada = input("\nIngresa la clave del cliente: ")
+
+                    if reserva_clave_del_cliente_capturada.strip() == "":
+                        print("\nLa clave del cliente no puede omitirse. Intente de nuevo.")
+                        continue
+
+                    reserva_clave_del_cliente = puede_ser_int(reserva_clave_del_cliente_capturada)
+
+                    try:
+                        with sqlite3.connect("evidencia3.db") as conn_clientes_select_id:
+                            mi_cursor = conn_clientes_select_id.cursor()
+                            mi_cursor.execute(f"SELECT  nombre FROM clientes WHERE id_cliente={reserva_clave_del_cliente}")
+                            clientes_registros_id = mi_cursor.fetchall()
+                        conn_clientes_select_id.close()
+                    except Error as e:
+                        print(e)
+                    except Exception:
+                        print(f"Se produjo el siguiente error: {sys.exc_info()[0]}")
+
+                    if clientes_registros_id:
+                        print(f"\nCliente {clientes_registros_id[0][0]} puede continuar con la resevación.")
+                        break
+                    else:
+                        print("\nNo se encontro la clave del cliente.")
+                        continue
+
+                while True:
+                    
+                    try:
+                        with sqlite3.connect("evidencia3.db")as conn_salas_mostrar:
+                            mi_cursor = conn_salas_mostrar.cursor()
+                            mi_cursor.execute("SELECT id_sala, nombre, cupo FROM salas")
+                            registros_salas = mi_cursor.fetchall()
+                            print(f"\n{'Salas registrados':^40}")
+                            print("-" * 40)
+                            print(f"{'Clave':<10}{'Nombre':<25}{'Cupo'}")
+                            print("-" * 40)
+                            for clave, nombre, cupo in registros_salas:
+                                print(f"{clave:<10}{nombre:<25}{cupo}")
+                            print("-" * 40)
+                        conn_salas_mostrar.close()  
+                    except Error as e:
+                        print(e)
+                    except Exception:
+                        print(f"\nSe produjo el siguiente error: {sys.exc_info()[0]}")
+
+                    clave_de_sala_reservas_capturada = input("\nIngresa el número de sala: ")
+
+                    if clave_de_sala_reservas_capturada.strip() == "":
+                        print("\nEl número de sala no puede omitirse.")
+                        continue
+
+                    clave_de_sala_reservas = puede_ser_int(clave_de_sala_reservas_capturada)
+
+                    if clave_de_sala_reservas == False:
+                        print("\nEl dato proporcionado no es de tipo entero.")
+                        continue
+
+                    try:
+                        with sqlite3.connect("evidencia3.db")as conn_salas_mostrar_por_id:
+                            mi_cursor = conn_salas_mostrar_por_id.cursor()
+                            mi_cursor.execute(f"SELECT nombre, cupo FROM salas WHERE id_sala={clave_de_sala_reservas}")
+                            registro_sala_por_id = mi_cursor.fetchall()
+                        conn_salas_mostrar_por_id.close()
+                    except Error as e:
+                        print(e)
+                    except Exception:
+                        print(f"\nSe produjo el siguiente error: {sys.exc_info()[0]}")
+
+                    if registro_sala_por_id:
+                        print(f"\nSala {registro_sala_por_id[0][0]} seleccionada.")
+                        break
+                    else:
+                        print("\nNo se encontro la clave de la sala.")
+                        continue
+
+                while True:
+
+                    fecha_actual = datetime.date.today()
+
+                    fecha_reservacion_capturada = input("\nEscribe la fecha de reservación que desea con el formato dd/mm/aaaa: ")
+
+                    if fecha_reservacion_capturada.strip() == "":
+                        print("\nEl dato proporcionado no es de tipo entero.")
+                        continue
+
+                    fecha_reservacion = puede_ser_tipo_fecha(fecha_reservacion_capturada)
+
+                    if fecha_reservacion == False:
+                        print("\nEl dato proporcionado no es de tipo entero.")
+                        continue
+
+                    resta_fecha = fecha_reservacion - fecha_actual
+
+                    if resta_fecha.days < 2 and resta_fecha.days >= 0:
+                        print("\nLa reservación debe hacerse dos días antes del día elegido.")
+                        continue
+                    elif resta_fecha.days < 0:
+                        print("\nEsa fecha ya pasó.")
+                        continue
+                    
+                    break
+
+                while True:
+
+                    try:
+                        with sqlite3.connect("evidencia3.db")as conn_turnos_mostrar:
+                            mi_cursor = conn_turnos_mostrar.cursor()
+                            mi_cursor.execute("SELECT id_turno, nombre FROM turnos")
+                            registros_turnos = mi_cursor.fetchall()
+                            print(f"\n{'Turnos posibles':^40}")
+                            print("-" * 40)
+                            print("Clave\t\tTurno")
+                            print("-" * 40)
+                            for clave, turno in registros_turnos:
+                                print(f"{clave}\t\t{turno}")
+                            print("-" * 40)
+                        conn_turnos_mostrar.close()
+                    except Error as e:
+                        print(e)
+                    except Exception:
+                        print(f"\nSe produjo el siguiente error: {sys.exc_info()[0]}")
+                                        
+                    turno_reservacion_capturada = input("\nElija un turno por su clave: ")
+
+                    if turno_reservacion_capturada.strip() == "":
+                        print("\nEl turno no puede omitirse.")
+                        continue
+                    
+                    turno_reservacion = puede_ser_int(turno_reservacion_capturada)
+
+                    if turno_reservacion == False:
+                        print("\nEl dato proporcionado no es de tipo entero.")
+                        continue
+                    
+                    try:
+                        with sqlite3.connect("evidencia3.db")as conn_turno_por_id:
+                            mi_cursor = conn_turno_por_id.cursor()
+                            mi_cursor.execute(f"SELECT nombre FROM turnos WHERE id_turno={turno_reservacion}")
+                            registros_turnos_por_id = mi_cursor.fetchall()
+                        conn_turno_por_id.close()
+                    except Error as e:
+                        print(e)
+                    except Exception:
+                        print(f"\nSe produjo el siguiente error: {sys.exc_info()[0]}")
+
+                    if registros_turnos_por_id:
+                        print(f"\nTurno {registros_turnos_por_id[0][0]} seleccionada.")
+                        break
+                    else:
+                        print("\nNo se encontro la clave del turno.")
+                        continue
+
+                while True:
+                                    
+                    try:
+                        with sqlite3.connect("evidencia3.db")as conn_reservas_mostrar:
+                            mi_cursor = conn_reservas_mostrar.cursor()
+                            mi_cursor.execute("SELECT folio, fecha, id_cliente, id_sala, nombre_evento ,id_turno FROM reservas")
+                            registros_reservas = mi_cursor.fetchall()
+                        conn_reservas_mostrar.close()
+                    except Error as e:
+                        print (e)
+                    except Exception:
+                        print(f"Se produjo el siguiente error: {sys.exc_info()[0]}")
+
+                    for folio, fecha, id_cliente, id_sala, nombre_evento ,id_turno in registros_reservas:
+                        if fecha_reservacion.strftime("%d/%m/%Y") == fecha and clave_de_sala_reservas == id_sala and turno_reservacion == id_turno:
+                            print(f"\nEstá ocupada esa sala y turno en la fecha {fecha_reservacion_capturada}.")
+                            break
+                    else:
+
+                        while True:
+
+                            nombre_evento = input("\nIngrese el nombre del evento: ")
+
+                            if nombre_evento.strip() == "":
+                                print("\nEl nombre no puede omitirse.")
+                                continue
+
+                            break
+                        try:
+                            with sqlite3.connect("evidencia3.db")as conn_reservas:
+                                mi_cursor = conn_reservas.cursor()
+                                insert_reservas = (fecha_reservacion.strftime("%d/%m/%Y"), reserva_clave_del_cliente, clave_de_sala_reservas, nombre_evento, turno_reservacion)
+                                mi_cursor.execute("INSERT INTO reservas (fecha, id_cliente, id_sala, nombre_evento ,id_turno) VALUES (?,?,?,?,?)", insert_reservas)
+                                print("\nReservacion completada correctamente.")
+                            conn_reservas.close()      
+                        except Error as e:
+                            print (e)
+                        except Exception:
+                            print(f"Se produjo el siguiente error: {sys.exc_info()[0]}")
+                    break
             elif opcion_menu_reservas.upper() == "B":
                 pass
             elif opcion_menu_reservas.upper() == "C":
