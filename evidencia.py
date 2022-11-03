@@ -72,140 +72,7 @@ while True:
             opcion_menu_reservas = input("Elija una opción: ")
 
             if opcion_menu_reservas.upper() == "A":
-                print(f"\n{'Clientes registrados':^40}")
-                print("-" * 40)
-                print("Clave\t\tCliente")
-                print("-" * 40)
-                for clave, nombre in clientes_dict.items():
-                    print(f"{clave}\t\t{nombre}")
-                print("-" * 40)
-                while True:
-
-                    clave_de_cliente_reserva_capturada = input("\nIngresa la clave del cliente con el que deseas hacer la reservacion: ")
-
-                    if clave_de_cliente_reserva_capturada.strip() == "":
-                        print("\nLa clave del cliente no puede omitirse.")
-                        continue
-
-                    try:
-                        clave_de_cliente_reserva = int(clave_de_cliente_reserva_capturada)
-                    except Exception:
-                        print("\nLa clave que ingreso no es de tipo entero.")
-                        continue
-
-                    if clave_de_cliente_reserva in clientes_dict:
-                        print(f"\nCliente {clientes_dict[clave_de_cliente_reserva]} puede hacer la reservación.")
-                        break
-                    else:
-                        print("\nClave cliente no existe.")
-                        continue
-
-                while True:
-                    
-                    print(f"\n{'Salas registradas':^40}")
-                    print("-" * 40)
-                    print(f"{'Clave':<10}{'Nombre':<25}{'Cupo'}")
-                    print("-" * 40)
-                    for clave, nombre_cupo in salas_dict.items():
-                        print(f"{clave:<10}{nombre_cupo[0]:<25}{nombre_cupo[1]}")
-                    print("-" * 40)
-
-                    clave_de_sala_reservas_capturada = input("\nIngresa el número de sala que quieres elegir: ")
-
-                    if clave_de_sala_reservas_capturada.strip() == "":
-                        print("\nEl número de sala no puede omitirse.")
-                        continue
-
-                    try:
-                        clave_de_sala_reservas = int(clave_de_sala_reservas_capturada)
-                    except Exception:
-                        print("\nEl número no es de tipo entero, intenta de nuevo.")
-                        continue
-
-                    if clave_de_sala_reservas in salas_dict:
-                        print(f"\nSala {clave_de_sala_reservas} seleccionada.")
-                        break
-                    else:
-                        print("\nClave de sala no existe.")
-                        continue
-
-                while True:
-
-                    fecha_actual = datetime.date.today()
-
-                    fecha_reservacion_capturada = input("\nEscribe la fecha en la que deseas hacer la reservacion con el siguiente  formato dd/mm/aaaa: ")
-
-                    if fecha_reservacion_capturada.strip() == "":
-                        print("\nLa fecha no puede omitirse,porfavor escribe una fecha valida.")
-                        continue
-
-                    try:
-                        fecha_reservacion = datetime.datetime.strptime(fecha_reservacion_capturada, "%d/%m/%Y").date()
-                    except Exception:
-                        print("\nFormato de fecha incorrecto, intenta de nuevo.")
-                        continue
-
-                    resta_fecha = fecha_reservacion - fecha_actual
-
-                    if resta_fecha.days < 2 and resta_fecha.days > 0:
-                        print("\nLa reservación debe hacerse por lo menos  dos días antes del día elegido.")
-                        continue
-                    elif resta_fecha.days < 0:
-                        print("\nEsa fecha ya pasó, porfavor elije otra.")
-                        continue
-                    
-                    break
-
-                while True:
-
-                    print(f"\n{'Turnos Disponibles':^40}")
-                    print("-" * 40)
-                    print("Clave\t\tTurno")
-                    print("-" * 40)
-                    for clave, turno in turno_dict.items():
-                        print(f"{clave}\t\t{turno}")
-                    print("-" * 40)
-
-                    turno_reservacion_capturada = input("\nElija un turno por su clave: ")
-
-                    if turno_reservacion_capturada.strip() == "":
-                        print("\nEl turno no puede omitirse.")
-                        continue
-                    
-                    try:
-                        turno_reservacion = int(turno_reservacion_capturada)
-                    except Exception:
-                        print("\nNo es de un dato entero.")
-                        continue
-
-                    if turno_reservacion in turno_dict:
-                        print(f"\nTurno {turno_dict[turno_reservacion]} seleccionado.")
-                        break
-                    else:
-                        print("\nEl turno que eligio no existe.")
-                        continue
-                while True:
-
-                    for datos in reservas_dict.values():
-                        if fecha_reservacion.strftime("%d/%m/%Y") == datos[0] and clave_de_sala_reservas == datos[1] and turno_dict[turno_reservacion] == datos[4]:
-                            print(f"\nno es posible hacer la reservacion ya que está ocupada esa sala y turno en la fecha {fecha_reservacion_capturada}.")
-                            break
-                    else:
-
-                        while True:
-
-                            nombre_evento = input("\nIngrese el nombre del evento: ")
-
-                            if nombre_evento.strip() == "":
-                                print("\nEl nombre no puede omitirse.")
-                                continue
-
-                            break
-
-                        folio = max(reservas_dict.keys(), default=0) + 1
-
-                        reservas_dict[folio] = [fecha_reservacion.strftime("%d/%m/%Y"), clave_de_sala_reservas, clientes_dict[clave_de_cliente_reserva], nombre_evento, turno_dict[turno_reservacion]]
-                    break
+                pass
             elif opcion_menu_reservas.upper() == "B":
                 pass
             elif opcion_menu_reservas.upper() == "C":
@@ -306,9 +173,67 @@ while True:
             else:
                 print("\nElija una opcion correcta.")
     elif opcion_menu.upper() == "C":
-        pass
+        while True:
+
+            cliente_nombre = input("\nIngresa el nombre del cliente: ")
+
+            if cliente_nombre.strip() == "":
+                print("\nEl nombre no se puede omitir.")
+                continue
+            try:
+                with sqlite3.connect("evidencia3.db") as conn_clientes_insert:
+                    mi_cursor = conn_clientes_insert.cursor()
+                    cliente_nombre_insert = {"nombre":cliente_nombre}
+                    mi_cursor.execute("INSERT INTO clientes (nombre) VALUES(:nombre)", cliente_nombre_insert)
+                    print("\nSe registro el cliente exitosamente")
+                conn_clientes_insert.close()
+            except Error as e:
+                print(e)
+            except:
+                print(f"\nSe produjo el siguiente error: {sys.exc_info()[0]}")
+            break
     elif opcion_menu.upper() == "D":
-        pass
+        while True:
+
+            sala_nombre = input("\nIngrese el nombre de sala: ")
+
+            if sala_nombre.strip() == "":
+                print("\nNo puede omitirse el nombre de la sala. Intente de nuevo.")
+                continue
+
+            break
+
+        while True:
+
+            sala_cupo_capturado = input("\nCupo de la sala: ")
+
+            if sala_cupo_capturado.strip() == "":
+                print("\nNo puede omitirse el cupo de la sala.")
+                continue
+
+            sala_cupo = puede_ser_int(sala_cupo_capturado)
+
+            if sala_cupo == False:
+                print("\nEl dato proporcionado no es de tipo entero.")
+                continue
+            
+            if sala_cupo <= 0:
+                print("\nEl cupo de la sala debe ser mayor a cero.")
+                continue
+
+            try:
+                with sqlite3.connect("evidencia3.db") as conn_salas_insert:
+                    mi_cursor = conn_salas_insert.cursor()
+                    sala_insert = {"nombre":sala_nombre, "cupo":sala_cupo}
+                    mi_cursor.execute("INSERT INTO salas (nombre, cupo) VALUES(:nombre, :cupo)", sala_insert)
+                    print("\nSe registro la sala exitosamente")
+                conn_salas_insert.close()
+            except Error as e:
+                print (e)
+            except:
+                print(f"\nSe produjo el siguiente error: {sys.exc_info()[0]}")
+
+            break
     elif opcion_menu.upper() == "E":
         break
     else:
