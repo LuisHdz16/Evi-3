@@ -122,13 +122,13 @@ while True:
                 try:
                     with sqlite3.connect("evidencia3.db") as conn:
                         db.cursor = conn.cursor()
-                        valores = {"folio":valor_folio}
-                        db.cursor.execute("SELECT * FROM Reservas WHERE folio = :folio, nombre = :nombre", valores)
+                        valores = {"folio":folio_evento}
+                        db.cursor.execute("SELECT * FROM Reservas WHERE folio = :folio", valores)
                         reservas = db.cursor.fetchall()
 
-                        if registro:
-                            for folio, nombre in Reservas:
-                                print(f"{folio}\t{nombre}")
+                        if Reservas:
+                            for folio in Reservas:
+                                print(f"{folio}")
                         else:
                             print(f"No se encontró una reservación asociada con el folio {valor_folio}")
                 except Error as e:
